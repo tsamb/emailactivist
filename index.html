@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email link generator - Plot, Plan, Strategize, Organize & Mobilize</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container { padding: 20px 10px; }
+
+    p {
+      margin-bottom: 30px;
+      line-height: 1.33em;  
+    }
+
+    .aligned-form {
+      display: flex;
+      flex-direction: column;
+      justifly-content: center;
+      align-item: center;
+      max-width: 600px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: row;
+      justifly-content: center;
+      align-item: center;
+    }
+
+    .form-group label {
+      text-align: right;  
+      padding-right: 8px;
+      padding-left: 10px;
+      width: auto;
+      font-weight: bold;
+      font-size: 1em;
+    }
+
+    .input-control {
+      flex: 1 1 auto;
+      margin-bottom: 10px;
+      margin-right: 8px;
+      padding: 4px;
+      margin-top: -4px;
+    }
+
+    input[type=submit] {
+      padding: 5px 15px;
+      margin: 5px;
+      min-width: 100px
+    }
+
+    pre {
+      white-space: pre-wrap;       /* Since CSS 2.1 */
+      white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+      white-space: -pre-wrap;      /* Opera 4-6 */
+      white-space: -o-pre-wrap;    /* Opera 7 */
+      word-wrap: break-word;       /* Internet Explorer 5.5+ */
+      padding: 5px;
+    }
+
+    #link-container { padding: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div><p>Fill in the form below with an email template and click "Create email link". Then either copy the "mailto" code to a link shortener (like <a href="https://bitly.com">Bitly</a>) or highlight and copy/paste the link itself. You can test the effect of the link by clicking it yourself.</p></div>
+    <div class="aligned-form">
+      <form id='mailto-link-form'>
+        <div class="form-group">
+          <label for="recipient">Email recipient</label>
+          <input id="recipient" class="input-control" name="recipient" type="email" required>
+        </div>
+        <div class="form-group">
+          <label for="subject">Email subject</label>
+          <input id="subject" class="input-control" name="subject" type="text" required>
+        </div>
+        <div class="form-group">
+          <label for="body">Email body</label>
+          <textarea id="body" class="input-control" name="body" cols="30" rows="10" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="link-text">Link display text</label>
+          <input id="link-text" class="input-control" name="link-text" type="text" value="Email link" required>
+        </div>
+      </div>
+      <div class="button-container">
+        <input type="submit" id="transform" value="Create email link">
+      </div>
+    </form>
+    <pre id="link-code">Email link code will appear here. Clickable/copyable link will appear below.</pre>
+    <div id="link-container"></div>
+  </div>
+<script>
+  document.getElementById('mailto-link-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const recipient = document.getElementById('recipient').value;
+    const subject = document.getElementById('subject').value;
+    const body = document.getElementById('body').value;
+    const linkText = document.getElementById('link-text').value;
+
+    const queryParams = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const href = `mailto:${recipient}?${queryParams}`;
+    
+    document.getElementById('link-code').innerText = href;
+    
+    const link = document.createElement("a");
+    link.href = href;
+    link.target = "_blank";
+    link.innerText = linkText;
+    
+    const linkContainer = document.getElementById('link-container');
+    linkContainer.innerHTML = '';
+    linkContainer.appendChild(link);
+  })
+</script>
+</body>
+</html>
