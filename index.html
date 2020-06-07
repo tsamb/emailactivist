@@ -12,11 +12,14 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
     }
-    .container { padding: 20px 10px; }
+    .container {
+      padding: 20px 10px;
+      max-width: 800px;
+    }
 
     p {
       margin-bottom: 30px;
-      line-height: 1.33em;  
+      line-height: 1.5em;
     }
 
     .aligned-form {
@@ -24,7 +27,6 @@
       flex-direction: column;
       justifly-content: center;
       align-item: center;
-      max-width: 600px;
     }
 
     .form-group {
@@ -35,7 +37,7 @@
     }
 
     .form-group label {
-      text-align: right;  
+      text-align: right;
       padding-right: 8px;
       padding-left: 10px;
       width: auto;
@@ -63,15 +65,23 @@
       white-space: -pre-wrap;      /* Opera 4-6 */
       white-space: -o-pre-wrap;    /* Opera 7 */
       word-wrap: break-word;       /* Internet Explorer 5.5+ */
-      padding: 5px;
+      padding: 8px;
     }
 
-    #link-container { padding: 5px; }
+    #link-container {
+      padding: 8px;
+      margin: 13px 0;
+    }
+
+    #shortener-container {
+      padding: 8px;
+      margin: 13px 0;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div><p>Fill in the form below with an email template and click "Create email link". Then either copy the "mailto" code to a link shortener (like <a href="https://bitly.com">Bitly</a>) or highlight and copy/paste the link itself. You can test the effect of the link by clicking it yourself.</p></div>
+    <div><p>Fill in the form below with an email template and click "Create email link". That will generate the raw mailto URL, a mailto link and allow you to create a shortened TinyURL link for sharing on social media. You can test the effect of the link by clicking it yourself.</p></div>
     <div class="aligned-form">
       <form id='mailto-link-form'>
         <div class="form-group">
@@ -84,11 +94,11 @@
         </div>
         <div class="form-group">
           <label for="body">Email body</label>
-          <textarea id="body" class="input-control" name="body" cols="30" rows="10" required></textarea>
+          <textarea id="body" class="input-control" name="body" cols="30" rows="20" required></textarea>
         </div>
         <div class="form-group">
           <label for="link-text">Link display text</label>
-          <input id="link-text" class="input-control" name="link-text" type="text" value="Email link" required>
+          <input id="link-text" class="input-control" name="link-text" type="text" value="Click here to email" required>
         </div>
       </div>
       <div class="button-container">
@@ -97,6 +107,7 @@
     </form>
     <pre id="link-code">Email link code will appear here. Clickable/copyable link will appear below.</pre>
     <div id="link-container"></div>
+    <div id="shortener-container"></div>
   </div>
 <script>
   document.getElementById('mailto-link-form').addEventListener('submit', (event) => {
@@ -109,17 +120,23 @@
 
     const queryParams = `subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const href = `mailto:${recipient}?${queryParams}`;
-    
+
     document.getElementById('link-code').innerText = href;
-    
+
     const link = document.createElement("a");
     link.href = href;
     link.target = "_blank";
     link.innerText = linkText;
-    
+
+
     const linkContainer = document.getElementById('link-container');
     linkContainer.innerHTML = '';
     linkContainer.appendChild(link);
+
+    const shortenerContainer = document.getElementById('shortener-container');
+    const tinyUrlFormHTML = `<form action="https://tinyurl.com/create.php" method="post" target="_blank"><b>Shorten this link with <a href="https://tinyurl.com">TinyURL.com</a>:</b><br/><input type="text" name="url" value="${href}"><input type="submit" name="submit" value="Make TinyURL"></form>`;
+    shortenerContainer.innerHTML = '';
+    shortenerContainer.insertAdjacentHTML('beforeend', tinyUrlFormHTML);
   })
 </script>
 </body>
